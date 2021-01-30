@@ -20,7 +20,6 @@ Tweather is an Android app that displays the weather for San Francisco using the
 
 Tweather uses a number of open source projects:
 
-**
 * [Hilt/Dagger] - Dependency Injection
 * [Espresso] - UI Tests
 * [Mockito] - Unit Tests
@@ -34,6 +33,6 @@ Tweather uses a number of open source projects:
 - [ ] Use [NetworkCallbacks] for apps that target API 29+. Also listen for connectivity to retry call failed
 - [ ] Make the UI even prettier
 
-* Planning to spend another hour or two to finish these 2 items.
+Note: *Planning to spend another hour or two to finish these 2 items.
 
 
