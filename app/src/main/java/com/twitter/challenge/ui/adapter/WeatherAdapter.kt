@@ -1,39 +1,50 @@
 package com.twitter.challenge.ui.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.twitter.challenge.databinding.ItemLayoutBinding
+import com.twitter.challenge.R
+import com.twitter.challenge.databinding.ItemWeatherBinding
 import com.twitter.challenge.model.WeatherListUI
 import com.twitter.challenge.model.WeatherUI
+import com.twitter.challenge.utils.safeLet
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
-class MainAdapter(
-    private val users: ArrayList<WeatherUI>
-) : RecyclerView.Adapter<MainAdapter.DataViewHolder>() {
+class WeatherAdapter(
+    private val weatherList: ArrayList<WeatherUI>
+) : RecyclerView.Adapter<WeatherAdapter.DataViewHolder>() {
 
-    class DataViewHolder(private val itemBinding: ItemLayoutBinding) : RecyclerView.ViewHolder(itemBinding.root) {
-        fun bind(user: WeatherUI) {
-            itemBinding.textViewUserName.text = user.name
-            itemBinding.textViewUserEmail.text = user.toString()
-            Glide.with(itemBinding.imageViewAvatar.context)
-                .load(android.R.drawable.ic_media_play)
-                .into(itemBinding.imageViewAvatar)
+    class DataViewHolder(private val itemBinding: ItemWeatherBinding) : RecyclerView.ViewHolder(itemBinding.root) {
+        @SuppressLint("SimpleDateFormat")
+        fun bind(weather: WeatherUI) {
+            itemBinding.apply {
+                val context = itemView.context
+                date.text = weather.date?.let { SimpleDateFormat("EEEE, MMMM dd", Locale.getDefault()).format(it) }.orEmpty()
+                safeLet(weather.tempCelsius, weather.tempFahrenheit) { celsius, fahrenheit ->
+                    temperature.text = context.getString(R.string.temperature, celsius, fahrenheit)
+                }
+                windSpeed.text = weather.windSpeed?.let { context.getString(R.string.wind_speed, it) }.orEmpty()
+                cloudIcon.isVisible = weather.showCloudIcon
+            }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DataViewHolder {
-        val binding: ItemLayoutBinding = ItemLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding: ItemWeatherBinding = ItemWeatherBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return DataViewHolder(binding)
     }
 
-    override fun getItemCount(): Int = users.size
+    override fun getItemCount(): Int = weatherList.size
 
     override fun onBindViewHolder(holder: DataViewHolder, position: Int) {
-        holder.bind(users[position])
+        holder.bind(weatherList[position])
     }
 
-    fun addData(list: WeatherListUI) {
-        list.weatherList?.let { users.addAll(it) }
+    fun addData(weatherListUI: WeatherListUI) {
+        weatherListUI.weatherList?.let { weatherList.addAll(it) }
     }
 }

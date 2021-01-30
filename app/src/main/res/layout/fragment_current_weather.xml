@@ -1,34 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/weather_container"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/weatherContainer"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="@dimen/regular_spacing"
         android:orientation="vertical"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible">
+
+        <ImageView
+            android:id="@+id/cloudIcon"
+            android:layout_width="@dimen/cloud_size_large"
+            android:layout_height="@dimen/cloud_size_large"
+            android:layout_marginStart="@dimen/regular_spacing"
+            android:layout_marginEnd="@dimen/regular_spacing"
+            android:contentDescription="@string/cloud_icon_cdesc"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/name"
+            app:srcCompat="@drawable/ic_black_cloud"
+            tools:visibility="visible" />
 
         <TextView
             android:id="@+id/name"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="San Francisco, CA" />
 
         <TextView
-            android:id="@+id/conditions"
-            android:layout_width="wrap_content"
+            android:id="@+id/temperature"
+            android:layout_width="@dimen/match_constraint"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/regular_spacing"
+            android:layout_marginTop="@dimen/regular_spacing"
+            android:layout_marginEnd="@dimen/regular_spacing"
+            android:gravity="bottom|end"
+            android:textAppearance="@style/TemperatureText"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/name"/>
+            app:layout_constraintStart_toEndOf="@id/cloudIcon"
+            app:layout_constraintTop_toBottomOf="@id/name"
+            tools:text="0 °C / 32 °F" />
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/windSpeed"
+            android:layout_width="@dimen/match_constraint"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/regular_spacing"
+            android:layout_marginEnd="@dimen/regular_spacing"
+            android:gravity="end"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/cloudIcon"
+            app:layout_constraintTop_toBottomOf="@id/temperature"
+            tools:text="Wind Speed: 50" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ProgressBar
         android:id="@+id/progress_bar"
@@ -37,6 +74,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,9 +1,9 @@
 package com.twitter.challenge.di
 
 import com.twitter.challenge.BuildConfig
-import com.twitter.challenge.data.ApiHelper
-import com.twitter.challenge.data.ApiHelperImpl
-import com.twitter.challenge.data.ApiService
+import com.twitter.challenge.network.ApiHelper
+import com.twitter.challenge.network.ApiHelperImpl
+import com.twitter.challenge.network.ApiService
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient

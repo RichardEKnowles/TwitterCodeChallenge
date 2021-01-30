@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.twitter.challenge.R
 import com.twitter.challenge.databinding.FragmentFutureWeatherBinding
 import com.twitter.challenge.model.WeatherListUI
-import com.twitter.challenge.ui.adapter.MainAdapter
+import com.twitter.challenge.ui.adapter.WeatherAdapter
 import com.twitter.challenge.ui.viewmodel.FutureWeatherViewModel
 import com.twitter.challenge.utils.Status
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,7 +21,7 @@ class FutureWeatherFragment : Fragment(R.layout.fragment_future_weather) {
 
     private var binding: FragmentFutureWeatherBinding? = null
     private val futureWeatherViewModel : FutureWeatherViewModel by viewModels()
-    private lateinit var adapter: MainAdapter
+    private lateinit var adapter: WeatherAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -38,7 +38,7 @@ class FutureWeatherFragment : Fragment(R.layout.fragment_future_weather) {
 
     private fun setupUI() {
         binding?.recyclerView?.layoutManager = LinearLayoutManager(context)
-        adapter = MainAdapter(arrayListOf())
+        adapter = WeatherAdapter(arrayListOf())
         binding?.recyclerView?.addItemDecoration(
             DividerItemDecoration(binding?.recyclerView?.context, LinearLayoutManager.VERTICAL)
         )
@@ -50,7 +50,7 @@ class FutureWeatherFragment : Fragment(R.layout.fragment_future_weather) {
             when (it.status) {
                 Status.SUCCESS -> {
                     binding?.progressBar?.visibility = View.GONE
-                    it.data?.let { users -> renderFiveDayList(users) }
+                    it.data?.let { fiveDayWeather -> renderFiveDayList(fiveDayWeather) }
                     binding?.recyclerView?.visibility = View.VISIBLE
                 }
                 Status.LOADING -> {
@@ -66,9 +66,11 @@ class FutureWeatherFragment : Fragment(R.layout.fragment_future_weather) {
         })
     }
 
-    private fun renderFiveDayList(fiveDayWeather: WeatherListUI) {
-        binding?.standardDeviation?.text = fiveDayWeather.tempStandardDeviation?.toString().orEmpty()
-        adapter.addData(fiveDayWeather)
+    private fun renderFiveDayList(weatherListUI: WeatherListUI) {
+        binding?.standardDeviation?.text = weatherListUI.tempStandardDeviation?.let {
+            getString(R.string.standard_deviation, it.first, it.second)
+        }.orEmpty()
+        adapter.addData(weatherListUI)
         adapter.notifyDataSetChanged()
     }
 }

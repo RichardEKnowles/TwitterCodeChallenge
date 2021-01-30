@@ -1,6 +1,6 @@
 package com.twitter.challenge.repository
 
-import com.twitter.challenge.data.ApiHelper
+import com.twitter.challenge.network.ApiHelper
 import javax.inject.Inject
 
 class WeatherRepository @Inject constructor(private val apiHelper: ApiHelper) {

@@ -1,3 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="cloud_icon_cdesc">Cloud</string>
 </resources>

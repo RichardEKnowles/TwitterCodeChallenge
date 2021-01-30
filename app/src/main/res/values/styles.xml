@@ -8,4 +8,12 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="Title" parent="TextAppearance.AppCompat.Title" />
+    <style name="TemperatureText" parent="TextAppearance.AppCompat.Display1">
+        <item name="android:textSize">@dimen/large_text_size</item>
+    </style>
+    <style name="TemperatureText.Item">
+        <item name="android:textSize">@dimen/medium_text_size</item>
+    </style>
+
 </resources>

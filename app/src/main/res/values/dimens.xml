@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="match_constraint">0dp</dimen>
+    <dimen name="regular_spacing">16dp</dimen>
+    <dimen name="cloud_size">64dp</dimen>
+    <dimen name="cloud_size_large">84dp</dimen>
+    <dimen name="medium_text_size">18sp</dimen>
+    <dimen name="large_text_size">24sp</dimen>
 </resources>

@@ -3,14 +3,15 @@ package com.twitter.challenge.ui.view
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import com.twitter.challenge.R
 import com.twitter.challenge.databinding.FragmentCurrentWeatherBinding
 import com.twitter.challenge.model.WeatherUI
 import com.twitter.challenge.ui.viewmodel.CurrentWeatherViewModel
 import com.twitter.challenge.utils.Status
+import com.twitter.challenge.utils.safeLet
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -32,20 +33,19 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather) {
     }
 
     private fun setupObserver() {
-        currentWeatherViewModel.currentWeather.observe(viewLifecycleOwner, Observer {
+        currentWeatherViewModel.currentWeather.observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
-                    binding?.progressBar?.visibility = View.GONE
-                    it.data?.let { users -> renderList(users) }
-                    binding?.weatherContainer?.visibility = View.VISIBLE
+                    binding?.progressBar?.isVisible = false
+                    it.data?.let { weather -> renderList(weather) }
+                    binding?.weatherContainer?.isVisible = true
                 }
                 Status.LOADING -> {
                     binding?.progressBar?.visibility = View.VISIBLE
-                    binding?.weatherContainer?.visibility = View.GONE
+                    binding?.weatherContainer?.isVisible = true
                 }
                 Status.ERROR -> {
-                    //Handle Error
-                    binding?.progressBar?.visibility = View.GONE
+                    binding?.progressBar?.isVisible = false
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                 }
             }
@@ -53,7 +53,13 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather) {
     }
 
     private fun renderList(weather: WeatherUI) {
-        binding?.name?.text = weather.name
-        binding?.conditions?.text = weather.toString()
+        binding?.apply {
+            name.text = weather.name.orEmpty()
+            safeLet(weather.tempCelsius, weather.tempFahrenheit) { celsius, fahrenheit ->
+                temperature.text = getString(R.string.temperature, celsius, fahrenheit)
+            }
+            windSpeed.text = weather.windSpeed?.let { getString(R.string.wind_speed, it) }.orEmpty()
+            cloudIcon.isVisible = weather.showCloudIcon
+        }
     }
 }

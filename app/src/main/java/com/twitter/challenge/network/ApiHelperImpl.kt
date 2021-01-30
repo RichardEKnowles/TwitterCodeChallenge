@@ -1,4 +1,4 @@
-package com.twitter.challenge.data
+package com.twitter.challenge.network
 
 import com.twitter.challenge.model.WeatherResponseDto
 import retrofit2.Response

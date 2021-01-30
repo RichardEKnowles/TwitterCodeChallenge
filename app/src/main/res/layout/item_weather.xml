@@ -4,38 +4,58 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
-    android:layout_height="200dp">
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/regular_spacing"
+    android:orientation="vertical"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
 
-    <ImageView
-        android:id="@+id/imageViewAvatar"
-        android:layout_width="60dp"
-        android:layout_height="0dp"
-        android:padding="4dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Feb 14, 2021" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/textViewUserName"
-        style="@style/TextAppearance.AppCompat.Large"
+    <TextView
+        android:id="@+id/temperature"
         android:layout_width="@dimen/match_constraint"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="4dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageViewAvatar"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Name" />
+        android:layout_marginTop="@dimen/regular_spacing"
+        android:layout_marginEnd="@dimen/regular_spacing"
+        android:layout_marginRight="@dimen/regular_spacing"
+        android:gravity="bottom"
+        android:textAppearance="@style/TemperatureText.Item"
+        app:layout_constraintEnd_toStartOf="@id/cloudIcon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/date"
+        tools:text="0 °C / 32 °F" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/textViewUserEmail"
+    <TextView
+        android:id="@+id/windSpeed"
         android:layout_width="@dimen/match_constraint"
-        android:layout_height="@dimen/match_constraint"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/textViewUserName"
-        app:layout_constraintTop_toBottomOf="@+id/textViewUserName"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/regular_spacing"
+        android:layout_marginRight="@dimen/regular_spacing"
+        app:layout_constraintEnd_toStartOf="@id/cloudIcon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/temperature"
+        tools:text="Wind Speed: 50" />
+
+    <ImageView
+        android:id="@+id/cloudIcon"
+        android:layout_width="@dimen/cloud_size"
+        android:layout_height="@dimen/cloud_size"
+        android:layout_marginStart="@dimen/regular_spacing"
+        android:layout_marginEnd="@dimen/regular_spacing"
+        android:contentDescription="@string/cloud_icon_cdesc"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:text="Email" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/date"
+        app:srcCompat="@drawable/ic_black_cloud"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

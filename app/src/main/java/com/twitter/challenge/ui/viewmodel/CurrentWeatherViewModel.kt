@@ -28,10 +28,13 @@ class CurrentWeatherViewModel @ViewModelInject constructor(
             if (networkHelper.isNetworkConnected()) {
                 weatherRepository.getCurrentWeather().let {
                     if (it.isSuccessful) {
-                        _currentWeather.postValue(Resource.success(it.body()?.toWeatherUIModel()))
+                        _currentWeather.postValue(Resource.success(it.body()?.toWeatherUIModel(0)))
                     } else _currentWeather.postValue(Resource.error(it.errorBody().toString(), null))
                 }
-            } else _currentWeather.postValue(Resource.error("No internet connection", null))
+            } else {
+                // TODO: Create a resource provider and pull strings from strings.xml
+                _currentWeather.postValue(Resource.error("No internet connection", null))
+            }
         }
     }
 }

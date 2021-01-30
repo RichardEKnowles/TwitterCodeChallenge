@@ -2,6 +2,7 @@ package com.twitter.challenge.utils
 
 import com.twitter.challenge.model.WeatherResponseDto
 import com.twitter.challenge.model.WeatherUI
+import java.util.*
 
 /**
  * Converts temperature in Celsius to temperature in Fahrenheit.
@@ -17,14 +18,20 @@ fun Double.celsiusToFahrenheit(): Double {
  *
  * @return [WeatherUI].
  */
-fun WeatherResponseDto.toWeatherUIModel(): WeatherUI {
+fun WeatherResponseDto.toWeatherUIModel(nthDay: Int): WeatherUI {
     val tempCelsius = weather?.temp
+    val cal: Calendar = Calendar.getInstance().apply {
+        time = Date()
+        add(Calendar.DATE, nthDay)
+    }
+
     return WeatherUI(
-        name = name,
-        tempCelsius = tempCelsius,
-        tempFahrenheit = tempCelsius?.celsiusToFahrenheit(),
-        windSpeed = wind?.speed,
-        showCloudIcon = clouds != null && clouds.cloudiness > 50
+            name = name,
+            date = cal.time,
+            tempCelsius = tempCelsius,
+            tempFahrenheit = tempCelsius?.celsiusToFahrenheit(),
+            windSpeed = wind?.speed,
+            showCloudIcon = clouds != null && clouds.cloudiness > CLOUDINESS_THRESHOLD
     )
 }
 
