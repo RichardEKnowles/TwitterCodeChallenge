@@ -2,7 +2,6 @@ package com.twitter.challenge.ui.view
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -34,7 +33,7 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather) {
     }
 
     private fun setupUI() {
-        binding?.retryButton?.setOnClickListener { currentWeatherViewModel.retryFetchCurrentWeather() }
+        binding?.includeErrorContainer?.retryButton?.setOnClickListener { currentWeatherViewModel.retryFetchCurrentWeather() }
     }
 
     private fun setupObserver() {
@@ -42,21 +41,20 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather) {
             when (it.status) {
                 Status.SUCCESS -> {
                     binding?.progressBar?.isVisible = false
-                    binding?.retryButton?.isVisible = false
+                    binding?.includeErrorContainer?.errorContainer?.isVisible = false
                     it.data?.let { weather -> renderList(weather) }
                     binding?.weatherContainer?.isVisible = true
                 }
                 Status.LOADING -> {
                     binding?.progressBar?.isVisible = true
-                    binding?.retryButton?.isVisible = false
+                    binding?.includeErrorContainer?.errorContainer?.isVisible = false
                     binding?.weatherContainer?.isVisible = true
                 }
                 Status.ERROR -> {
                     binding?.progressBar?.isVisible = false
-                    binding?.retryButton?.isVisible = true
-                    it.messageRes?.let { errorMessageRes ->
-                        Toast.makeText(context, getString(errorMessageRes), Toast.LENGTH_LONG).show()
-                    }
+                    binding?.includeErrorContainer?.errorContainer?.isVisible = true
+                    val errorMessage = it.messageRes?.let { errorMessageRes -> getString(errorMessageRes) }
+                    binding?.includeErrorContainer?.errorMessage?.text = errorMessage.orEmpty()
                 }
             }
         })

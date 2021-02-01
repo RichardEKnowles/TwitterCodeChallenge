@@ -2,7 +2,6 @@ package com.twitter.challenge.ui.view
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -46,7 +45,7 @@ class FutureWeatherFragment : Fragment(R.layout.fragment_future_weather) {
         binding?.recyclerView?.adapter = adapter
 
         // setup click listeners
-        binding?.retryButton?.setOnClickListener { futureWeatherViewModel.retryFetchFutureWeather() }
+        binding?.includeErrorContainer?.retryButton?.setOnClickListener { futureWeatherViewModel.retryFetchFutureWeather() }
     }
 
     private fun setupObserver() {
@@ -54,21 +53,20 @@ class FutureWeatherFragment : Fragment(R.layout.fragment_future_weather) {
             when (it.status) {
                 Status.SUCCESS -> {
                     binding?.progressBar?.isVisible = false
-                    binding?.retryButton?.isVisible = false
+                    binding?.includeErrorContainer?.errorContainer?.isVisible = false
                     it.data?.let { fiveDayWeather -> renderFiveDayList(fiveDayWeather) }
                     binding?.recyclerView?.isVisible = true
                 }
                 Status.LOADING -> {
                     binding?.progressBar?.isVisible = true
-                    binding?.retryButton?.isVisible = false
+                    binding?.includeErrorContainer?.errorContainer?.isVisible = false
                     binding?.recyclerView?.isVisible = false
                 }
                 Status.ERROR -> {
                     binding?.progressBar?.isVisible = false
-                    binding?.retryButton?.isVisible = true
-                    it.messageRes?.let { errorMessageRes ->
-                        Toast.makeText(context, errorMessageRes, Toast.LENGTH_LONG).show()
-                    }
+                    binding?.includeErrorContainer?.errorContainer?.isVisible = true
+                    val errorMessage = it.messageRes?.let { errorMessageRes -> getString(errorMessageRes) }
+                    binding?.includeErrorContainer?.errorMessage?.text = errorMessage.orEmpty()
                 }
             }
         })
