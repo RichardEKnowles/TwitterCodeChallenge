@@ -4,10 +4,9 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import com.twitter.challenge.model.WeatherUI
 import com.twitter.challenge.repository.WeatherRepository
-import com.twitter.challenge.utils.NetworkHelper
-import com.twitter.challenge.utils.Resource
-import com.twitter.challenge.utils.toWeatherUIModel
+import com.twitter.challenge.utils.*
 import kotlinx.coroutines.*
+import timber.log.Timber
 
 class CurrentWeatherViewModel @ViewModelInject constructor(
         private val weatherRepository: WeatherRepository,
@@ -22,6 +21,10 @@ class CurrentWeatherViewModel @ViewModelInject constructor(
         fetchCurrentWeather()
     }
 
+    fun retryFetchCurrentWeather() {
+        fetchCurrentWeather()
+    }
+
     private fun fetchCurrentWeather() {
         viewModelScope.launch {
             _currentWeather.postValue(Resource.loading(null))
@@ -29,11 +32,13 @@ class CurrentWeatherViewModel @ViewModelInject constructor(
                 weatherRepository.getCurrentWeather().let {
                     if (it.isSuccessful) {
                         _currentWeather.postValue(Resource.success(it.body()?.toWeatherUIModel(0)))
-                    } else _currentWeather.postValue(Resource.error(it.errorBody().toString(), null))
+                    } else {
+                        Timber.e(it.message())
+                        _currentWeather.postValue(Resource.error(ErrorType.NETWORK_ERROR, null))
+                    }
                 }
             } else {
-                // TODO: Create a resource provider and pull strings from strings.xml
-                _currentWeather.postValue(Resource.error("No internet connection", null))
+                _currentWeather.postValue(Resource.error(ErrorType.NO_INTERNET_DETECTED, null))
             }
         }
     }

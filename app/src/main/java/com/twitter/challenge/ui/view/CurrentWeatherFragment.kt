@@ -24,6 +24,7 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather) {
         super.onViewCreated(view, savedInstanceState)
         val fragmentCurrentWeatherBinding = FragmentCurrentWeatherBinding.bind(view)
         binding = fragmentCurrentWeatherBinding
+        setupUI()
         setupObserver()
     }
 
@@ -32,21 +33,30 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather) {
         super.onDestroyView()
     }
 
+    private fun setupUI() {
+        binding?.retryButton?.setOnClickListener { currentWeatherViewModel.retryFetchCurrentWeather() }
+    }
+
     private fun setupObserver() {
         currentWeatherViewModel.currentWeather.observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
                     binding?.progressBar?.isVisible = false
+                    binding?.retryButton?.isVisible = false
                     it.data?.let { weather -> renderList(weather) }
                     binding?.weatherContainer?.isVisible = true
                 }
                 Status.LOADING -> {
-                    binding?.progressBar?.visibility = View.VISIBLE
+                    binding?.progressBar?.isVisible = true
+                    binding?.retryButton?.isVisible = false
                     binding?.weatherContainer?.isVisible = true
                 }
                 Status.ERROR -> {
                     binding?.progressBar?.isVisible = false
-                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                    binding?.retryButton?.isVisible = true
+                    it.messageRes?.let { errorMessageRes ->
+                        Toast.makeText(context, getString(errorMessageRes), Toast.LENGTH_LONG).show()
+                    }
                 }
             }
         })

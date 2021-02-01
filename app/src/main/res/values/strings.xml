@@ -5,4 +5,8 @@
     <string name="current_weather_title">Today</string>
     <string name="future_weather_title">5 Days</string>
     <string name="standard_deviation">Standard Deviation: °C: %1$.4f  /  °F: %2$.4f</string>
+    <string name="error_msg_generic">Something went wrong. Please try again.</string>
+    <string name="error_msg_network">A network error occurred. Please try again later.</string>
+    <string name="error_msg_no_internet_detected">No internet connection. Make sure that Wi-Fi or mobile data is turned on, then try again.</string>
+    <string name="retry">Retry</string>
 </resources>

@@ -3,9 +3,9 @@ package com.twitter.challenge.ui.view
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.twitter.challenge.R
@@ -37,30 +37,38 @@ class FutureWeatherFragment : Fragment(R.layout.fragment_future_weather) {
     }
 
     private fun setupUI() {
+        // setup recyclerview
         binding?.recyclerView?.layoutManager = LinearLayoutManager(context)
         adapter = WeatherAdapter(arrayListOf())
         binding?.recyclerView?.addItemDecoration(
             DividerItemDecoration(binding?.recyclerView?.context, LinearLayoutManager.VERTICAL)
         )
         binding?.recyclerView?.adapter = adapter
+
+        // setup click listeners
+        binding?.retryButton?.setOnClickListener { futureWeatherViewModel.retryFetchFutureWeather() }
     }
 
     private fun setupObserver() {
-        futureWeatherViewModel.futureWeather.observe(viewLifecycleOwner, Observer {
+        futureWeatherViewModel.futureWeather.observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.SUCCESS -> {
-                    binding?.progressBar?.visibility = View.GONE
+                    binding?.progressBar?.isVisible = false
+                    binding?.retryButton?.isVisible = false
                     it.data?.let { fiveDayWeather -> renderFiveDayList(fiveDayWeather) }
-                    binding?.recyclerView?.visibility = View.VISIBLE
+                    binding?.recyclerView?.isVisible = true
                 }
                 Status.LOADING -> {
-                    binding?.progressBar?.visibility = View.VISIBLE
-                    binding?.recyclerView?.visibility = View.GONE
+                    binding?.progressBar?.isVisible = true
+                    binding?.retryButton?.isVisible = false
+                    binding?.recyclerView?.isVisible = false
                 }
                 Status.ERROR -> {
-                    //Handle Error
-                    binding?.progressBar?.visibility = View.GONE
-                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                    binding?.progressBar?.isVisible = false
+                    binding?.retryButton?.isVisible = true
+                    it.messageRes?.let { errorMessageRes ->
+                        Toast.makeText(context, errorMessageRes, Toast.LENGTH_LONG).show()
+                    }
                 }
             }
         })

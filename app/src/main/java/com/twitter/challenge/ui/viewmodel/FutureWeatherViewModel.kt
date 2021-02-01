@@ -7,6 +7,7 @@ import com.twitter.challenge.model.WeatherUI
 import com.twitter.challenge.repository.WeatherRepository
 import com.twitter.challenge.utils.*
 import kotlinx.coroutines.*
+import timber.log.Timber
 
 class FutureWeatherViewModel @ViewModelInject constructor(
         private val weatherRepository: WeatherRepository,
@@ -21,6 +22,10 @@ class FutureWeatherViewModel @ViewModelInject constructor(
         fetchFutureDaysOfWeather()
     }
 
+    fun retryFetchFutureWeather() {
+        fetchFutureDaysOfWeather()
+    }
+
     private fun fetchFutureDaysOfWeather() {
         viewModelScope.launch {
             _futureWeather.postValue(Resource.loading(null))
@@ -31,7 +36,10 @@ class FutureWeatherViewModel @ViewModelInject constructor(
                         for (i in 1 until FETCH_NEXT_N_DAYS + 1) {
                             listDeferred.add(async { weatherRepository.getFutureWeather(i).let {
                                 if (it.isSuccessful) it.body()?.toWeatherUIModel(i) else {
-                                    throw Exception() // TODO: Handle more gracefully and throw specific exceptions
+                                    Timber.e(it.message())
+                                    cancel()
+                                    _futureWeather.postValue(Resource.error(ErrorType.NETWORK_ERROR, null))
+                                    null
                                 } }
                             })
                         }
@@ -41,12 +49,10 @@ class FutureWeatherViewModel @ViewModelInject constructor(
                         _futureWeather.postValue(Resource.success(weatherListUI))
                     }
                 } else {
-                    // TODO: Create a resource provider and pull strings from strings.xml
-                    _futureWeather.postValue(Resource.error("No internet connection", null))
+                    _futureWeather.postValue(Resource.error(ErrorType.NO_INTERNET_DETECTED, null))
                 }
             } catch (e: Exception) {
-                // TODO: Create a resource provider and pull strings from strings.xml
-                _futureWeather.postValue(Resource.error("Something went wrong", null))
+                _futureWeather.postValue(Resource.error(ErrorType.GENERIC, null))
             }
         }
     }
